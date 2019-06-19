@@ -1,0 +1,4 @@
+Compile command: gcc -Wall -Werror -Wextra get_next_line.c ./libft/libft.a
+OR: gcc get_next_line.c ./libft/libft.a
+
+Run command: ./a.out textfile
