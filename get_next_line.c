@@ -6,7 +6,7 @@
 /*   By: jhansen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/19 11:28:55 by jhansen           #+#    #+#             */
-/*   Updated: 2019/06/20 16:34:39 by jhansen          ###   ########.fr       */
+/*   Updated: 2019/06/20 16:42:58 by jhansen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int		get_next_line(const int fd, char **line)
 	else if (str[ret + 1] == '\n')
 	{
 		free(str);
-		//free(temp);
+			//free(temp);
 		return (1);
 	}
 	free(str);
