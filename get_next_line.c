@@ -6,7 +6,7 @@
 /*   By: jhansen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/19 11:28:55 by jhansen           #+#    #+#             */
-/*   Updated: 2019/06/20 16:42:58 by jhansen          ###   ########.fr       */
+/*   Updated: 2019/06/21 15:31:57 by jhansen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,17 @@ int		ft_line(char **content, char **line)
 
 	temp = *content;
 	i = 0;
+	printf("Content in ft_line: %s\nTemp in ft_line: %s\n", *content, temp);
 	while (temp[i] != '\0' && temp[i] != '\n')
+	{
+		printf("i: %d\n", i); 
 		i++;
-	if (!(ft_memcpy(line, temp, i)))
+	}
+	if (!(ft_strdup(*line, temp, i)))	//seg faulting
 		return (-1);
 	if (temp[i + 1] == '\n')
 	{
-		ft_memcpy(temp, (temp + (i + 2)), (ft_strlen(temp) - i + 1));
+		ft_memcpy(temp, temp + (i + 2), (ft_strlen(temp) - i + 1)); //for now its 2
 		*content = temp;
 	}
 	else if (temp[i + 1] == '\0')
@@ -41,12 +45,11 @@ int		ft_line(char **content, char **line)
 int		get_next_line(const int fd, char **line)
 {
 	static t_list	*current;
-	static int 		i = 0;
 	char			buffer[BUFF_SIZE + 1];
 	char			*temp;
 	char 			*str;
 	int				ret;
-	
+
 	current = ft_lstnew("", 0);
 	if (fd < 0 || line == NULL || read(fd, NULL, 0) < 0)
 		return (-1);
@@ -56,26 +59,20 @@ int		get_next_line(const int fd, char **line)
 		temp = current->content;
 		temp = ft_strjoin(temp, buffer);
 		current->content = temp;
+		if (ret == 0 && current->content == '\0')
+			return (0);
 		str = ft_strdup(temp);
 		if (ft_strchr(temp, '\n'))
 		{
 			ret = ft_line(&temp, line);
+			free(current->content);
 			current->content = temp;
 			break ;
 		}
-		i++;
 	}
 	if (ret < 0)
 		return (-1);
-	else if (str[ret + 1] == '\n')
-	{
-		free(str);
-			//free(temp);
-		return (1);
-	}
-	free(str);
-	//free(temp);
-	return (0);
+	return (1);
 }
 
 int		main(int argc, char **argv)
