@@ -6,7 +6,7 @@
 /*   By: jhansen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/12 14:17:16 by jhansen           #+#    #+#             */
-/*   Updated: 2019/06/20 15:53:23 by jhansen          ###   ########.fr       */
+/*   Updated: 2019/06/21 16:05:08 by jhansen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,5 @@
 # include <stdlib.h>
 
 int					get_next_line(const int fd, char **line);
-int					ft_line(char **content, char **line);
-
-/*typedef struct		s_list
-{
-	void			*content;
-	size_t			content_size;
-	struct s_list	*next;
-}					t_list;*/
 
 #endif

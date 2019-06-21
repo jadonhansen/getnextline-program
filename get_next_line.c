@@ -6,7 +6,7 @@
 /*   By: jhansen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/19 11:28:55 by jhansen           #+#    #+#             */
-/*   Updated: 2019/06/21 15:31:57 by jhansen          ###   ########.fr       */
+/*   Updated: 2019/06/21 16:29:29 by jhansen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,44 +14,47 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-int		ft_line(char **content, char **line)
+t_list	*ft_file(int fd, t_list **file)
+{
+	t_list	*temp;
+
+	if (!file)
+		return (NULL);
+	temp = *file;
+	while (temp)
+	{
+		if ((int)temp->content_size == fd)
+			return (temp);
+		temp = temp->next;
+	}
+	temp = ft_lstnew("", fd);
+	ft_lstadd(file, temp);
+	return (temp);
+}
+
+int		ft_line(char *content, char **line)
 {
 	int		i;
 	char	*temp;
 
-	temp = *content;
 	i = 0;
-	printf("Content in ft_line: %s\nTemp in ft_line: %s\n", *content, temp);
-	while (temp[i] != '\0' && temp[i] != '\n')
-	{
-		printf("i: %d\n", i); 
+	temp = *line;
+	while (content[i] && content[i] != '\n')
 		i++;
-	}
-	if (!(ft_strdup(*line, temp, i)))	//seg faulting
-		return (-1);
-	if (temp[i + 1] == '\n')
-	{
-		ft_memcpy(temp, temp + (i + 2), (ft_strlen(temp) - i + 1)); //for now its 2
-		*content = temp;
-	}
-	else if (temp[i + 1] == '\0')
-	{
-		free(*content);
-	}
-	//free(temp);
+	if (!(*line = ft_strndup(content, i)))
+		return (0);
 	return (i);
 }
 
 int		get_next_line(const int fd, char **line)
 {
-	static t_list	*current;
+	static t_list	*file;
+	t_list			*current;
 	char			buffer[BUFF_SIZE + 1];
 	char			*temp;
-	char 			*str;
 	int				ret;
 
-	current = ft_lstnew("", 0);
-	if (fd < 0 || line == NULL || read(fd, NULL, 0) < 0)
+	if (fd < 0 || line == NULL || read(fd, NULL, 0) < 0 || !(current = ft_file(fd, &file)))
 		return (-1);
 	while ((ret = read(fd, buffer, BUFF_SIZE)) > 0)
 	{
@@ -61,17 +64,20 @@ int		get_next_line(const int fd, char **line)
 		current->content = temp;
 		if (ret == 0 && current->content == '\0')
 			return (0);
-		str = ft_strdup(temp);
 		if (ft_strchr(temp, '\n'))
 		{
-			ret = ft_line(&temp, line);
-			free(current->content);
-			current->content = temp;
+			ret = ft_line(current->content, line);
 			break ;
 		}
 	}
-	if (ret < 0)
-		return (-1);
+	temp = current->content;
+	if (temp[ret] != '\0')
+	{
+		current->content = ft_strdup(current->content + ret + 1);
+		free(temp);
+	}
+	else
+		ft_strclr(temp);
 	return (1);
 }
 
