@@ -6,7 +6,7 @@
 /*   By: jhansen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/19 11:28:55 by jhansen           #+#    #+#             */
-/*   Updated: 2019/06/24 14:41:51 by jhansen          ###   ########.fr       */
+/*   Updated: 2019/06/24 14:49:00 by jhansen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,9 @@ int		get_next_line(const int fd, char **line)
 		current->content = ft_strjoin(temp, buffer);
 		free(temp);
 		if (ft_strchr(buffer, '\n'))
-		{
-			ret = ft_line(current->content, line);
 			break ;
-		}
 	}
+	ret = ft_line(current->content, line);
 	temp = current->content;
 	if (ret == 0 && temp[0] == '\0')
 		return (0);
