@@ -6,7 +6,7 @@
 /*   By: jhansen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/19 11:28:55 by jhansen           #+#    #+#             */
-/*   Updated: 2019/06/21 16:29:29 by jhansen          ###   ########.fr       */
+/*   Updated: 2019/06/24 14:41:51 by jhansen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ int		ft_line(char *content, char **line)
 		i++;
 	if (!(*line = ft_strndup(content, i)))
 		return (0);
+	free(temp);
 	return (i);
 }
 
@@ -56,28 +57,28 @@ int		get_next_line(const int fd, char **line)
 
 	if (fd < 0 || line == NULL || read(fd, NULL, 0) < 0 || !(current = ft_file(fd, &file)))
 		return (-1);
-	while ((ret = read(fd, buffer, BUFF_SIZE)) > 0)
+	while ((ret = read(fd, buffer, BUFF_SIZE)))
 	{
 		buffer[ret] = '\0';
 		temp = current->content;
-		temp = ft_strjoin(temp, buffer);
-		current->content = temp;
-		if (ret == 0 && current->content == '\0')
-			return (0);
-		if (ft_strchr(temp, '\n'))
+		current->content = ft_strjoin(temp, buffer);
+		free(temp);
+		if (ft_strchr(buffer, '\n'))
 		{
 			ret = ft_line(current->content, line);
 			break ;
 		}
 	}
 	temp = current->content;
+	if (ret == 0 && temp[0] == '\0')
+		return (0);
 	if (temp[ret] != '\0')
 	{
-		current->content = ft_strdup(current->content + ret + 1);
+		current->content = ft_strdup(temp + ret + 1);
 		free(temp);
 	}
 	else
-		ft_strclr(temp);
+		ft_strclr(current->content);
 	return (1);
 }
 
@@ -109,7 +110,7 @@ int		main(int argc, char **argv)
 		printf("BUFF_SIZE: %d\n\n", BUFF_SIZE);
 		while ((gnlret = get_next_line(fd, line)) > 0)
 		{
-			printf("%s\n", *line);
+			printf("%s", *line);
 			printf("%d\n", gnlret);
 			linecount++;
 		}
