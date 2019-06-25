@@ -6,7 +6,7 @@
 /*   By: jhansen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/19 11:28:55 by jhansen           #+#    #+#             */
-/*   Updated: 2019/06/24 16:50:43 by jhansen          ###   ########.fr       */
+/*   Updated: 2019/06/25 13:05:16 by jhansen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ int		ft_line(char *content, char **line)
 		i++;
 	if (!(*line = ft_strndup(content, i)))
 		return (0);
-	free(temp);
 	return (i);
 }
 
@@ -55,13 +54,14 @@ int		get_next_line(const int fd, char **line)
 	char			*temp;
 	int				ret;
 
-	if (fd < 0 || line == NULL || read(fd, NULL, 0) < 0 || !(current = ft_file(fd, &file)))
+	if (fd < 0 || line == NULL || read(fd, NULL, 0) < 0 || (!(current = ft_file(fd, &file))))
 		return (-1);
-	while ((ret = read(fd, buffer, BUFF_SIZE)))
+	while ((ret = read(fd, buffer, BUFF_SIZE)) > 0)
 	{
 		buffer[ret] = '\0';
 		temp = current->content;
-		current->content = ft_strjoin(temp, buffer);
+		if (!(current->content = ft_strjoin(temp, buffer)))
+				return (-1);
 		free(temp);
 		if (ft_strchr(buffer, '\n'))
 			break ;
@@ -71,12 +71,9 @@ int		get_next_line(const int fd, char **line)
 	if (ret == 0 && temp[0] == '\0')
 		return (0);
 	if (temp[ret] != '\0')
-	{
 		current->content = ft_strdup(temp + ret + 1);
-		free(temp);
-	}
 	else
-		ft_strclr(current->content);
+		ft_strclr(temp);
 	return (1);
 }
 
@@ -88,26 +85,28 @@ int		main(int argc, char **argv)
     int		linecount;
 
 	linecount = 0;
-	gnlret = 1;
+	gnlret = 0;
 	if (argc != 2)
 		fd = 0;
+	else
+		fd = open(argv[1], O_RDONLY);
 	if (fd < 0)
 		{
 			printf("Could not find file: %s\n", argv[1]);
 			return (0);
 		}
-		printf("Argc: %d\n", argc);
-		printf("File to open: %s\n", argv[1]);
-		line = ft_memalloc(sizeof(char *));
-		printf("BUFF_SIZE: %d\n\n", BUFF_SIZE);
-		while ((gnlret = get_next_line(fd, &line)) > 0)
-		{
-			printf("%s", line);
-			printf("%d\n", gnlret);
-			linecount++;
-		}
-		printf("\nLine count: %d\n", linecount);
-		printf("Finished\n\n");
-		close(fd);
+	printf("Argc: %d\n", argc);		
+	printf("File to open: %s\n", argv[1]);
+	line = ft_memalloc(sizeof(char *));
+	printf("BUFF_SIZE: %d\n\n", BUFF_SIZE);
+	while ((gnlret = get_next_line(fd, &line)) > 0)
+	{
+		printf("%s", line);
+		printf("%d\n", gnlret);
+		linecount++;
+	}
+	printf("\nLine count: %d\n", linecount);
+	printf("Finished\n");
+	close(fd);
 	return (0);
 }
