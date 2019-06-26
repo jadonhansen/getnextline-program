@@ -6,11 +6,12 @@
 /*   By: jhansen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/19 11:28:55 by jhansen           #+#    #+#             */
-/*   Updated: 2019/06/25 14:17:43 by jhansen          ###   ########.fr       */
+/*   Updated: 2019/06/26 10:57:08 by jhansen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
 #include <fcntl.h>
 #include <stdio.h>
 
@@ -32,7 +33,7 @@ t_list	*ft_file(int fd, t_list **file)
 	return (temp);
 }
 
-int		ft_line(char *content, char **line)
+int		ft_generate_line(char *content, char **line)
 {
 	int		i;
 	char	*temp;
@@ -68,13 +69,13 @@ int		get_next_line(const int fd, char **line)
 		if (ft_strchr(buffer, '\n'))
 			break ;
 	}
-	ret = ft_line(current->content, line);
+	ret = ft_generate_line(current->content, line);
 	temp = current->content;
 	if (ret == 0 && temp[0] == '\0')
 		return (0);
 	if (temp[ret] != '\0')
 	{
-		current->content = ft_strdup(temp + ret + 1);
+		current->content = ft_strdup(current->content + ret + 1);
 		free(temp);
 	}
 	else
