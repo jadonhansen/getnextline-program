@@ -6,13 +6,20 @@
 /*   By: jhansen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/04 15:09:10 by jhansen           #+#    #+#             */
-/*   Updated: 2019/06/27 16:22:09 by jhansen          ###   ########.fr       */
+/*   Updated: 2019/08/15 13:37:12 by jhansen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 # define INTMIN -2147483648
+# define RESET "\033[00m"
+# define GREEN "\033[32m"
+# define BLUE "\033[34m"
+# define WHITE "\033[37m"
+# define RED "\033[31m"
+# define YELLOW "\033[33m"
+# define CYAN "\033[36m"
 
 # include <string.h>
 # include <stdlib.h>
@@ -116,5 +123,15 @@ t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 */
 
 char				*ft_strndup(const char *s1, size_t n);
+
+/*
+**Extra used in push_swap
+*/
+
+int					ft_str_is_numeric(const char *str);
+int					ft_intlen(int n);
+void				ft_putstr_colour(char *colour, char *s);
+long				ft_atol(char *s);
+void				ft_array_free(char **arr);
 
 #endif
