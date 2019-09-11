@@ -12,3 +12,7 @@ Main Concepts Learnt:
 3 - Buff Sizes
 
 TIP: (Run 'make re' in the 'libft' folder before using with a main)
+  
+    Compile command: "gcc get_next_line.c ./libft/libft.a"
+
+    Run command: "./a.out onebigfatline"
